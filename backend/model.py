@@ -6,7 +6,6 @@ from flask_security import (
 
 db = SQLAlchemy()
 
-
 class User(db.Model, UserMixin):
     __tablename__ = "users"
 
@@ -43,3 +42,12 @@ class UserRole(db.Model):
 
 
 # ---------------------------------------------------------------------------------------------
+
+class Subjects(db.Model):
+    __tablename__ = "subjects"
+
+    id = db.Column(db.Integer, primary_key=True)
+    sub_id = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    description = db.Column(db.String(255))
+

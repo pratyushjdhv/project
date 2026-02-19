@@ -1,3 +1,5 @@
+from flask_security import utils
+from argon2 import hash_password
 from flask import Flask
 from flask_restful import Api
 from model import db
@@ -33,7 +35,7 @@ def initiate_db(app):
             datastore.create_user(
                 username="admin",
                 email="admin@example.com",
-                password="admin123",
+                password= utils.hash_password("admin123"),
                 roles=[admin_role, student_role, manager_role, instructor_role],
             )
             print("admin created!!!")
@@ -42,7 +44,7 @@ def initiate_db(app):
             datastore.create_user(
                 username="manager",
                 email="manager@example.com",
-                password="manager123",
+                password= utils.hash_password("manager123"),
                 roles=[manager_role],
             )
             print("manager created!!!")
@@ -51,7 +53,7 @@ def initiate_db(app):
             datastore.create_user(
                 username="instructor",
                 email="instructor@example.com",
-                password="instructor123",
+                password= utils.hash_password("instructor123"),
                 roles=[instructor_role],
             )
             print("instructor created!!!")
@@ -60,7 +62,7 @@ def initiate_db(app):
             datastore.create_user(
                 username="student",
                 email="student@example.com",
-                password="student123",
+                password= utils.hash_password("student123"),
                 roles=[student_role],
             )
             print("student created!!!")
@@ -75,10 +77,13 @@ CORS(app)
 
 # from route import *
 
-from auth import LoginUser, LogoutUser
+from apis.auth import LoginUser, LogoutUser, SignupUser
+from apis.crud import AddSub
 
 api.add_resource(LoginUser, '/login-user')
 api.add_resource(LogoutUser, '/logout-user')
+api.add_resource(SignupUser, '/signup-user')
+api.add_resource(AddSub, '/subjects', '/subjects/<string:sub_id>')
 
 
 if __name__ == "__main__":
