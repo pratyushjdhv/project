@@ -78,7 +78,7 @@ CORS(app)
 # from route import *
 
 from apis.auth import LoginUser, LogoutUser, SignupUser
-from apis.crud import AddSub, Addinstructor, Addstud
+from apis.crud import Addmanager, Subs, Addinstructor, Addstud
 
 # -------------------------------------------------------------------
 # APIS
@@ -89,9 +89,10 @@ api.add_resource(SignupUser, '/signup-user')
 
 # -----------------------------------------------------------------------------
 
-api.add_resource(AddSub, '/subjects', '/subjects/<string:sub_id>')
+api.add_resource(Subs, '/subjects', '/subjects/<string:sub_id>')
 api.add_resource(Addinstructor, '/add-instructor/<string:user_id>')
 api.add_resource(Addstud, '/add-student/<string:user_id>')
+api.add_resource(Addmanager, '/add-manager/<string:user_id>')
 
 
 if __name__ == "__main__":

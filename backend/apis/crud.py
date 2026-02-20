@@ -5,7 +5,7 @@ from flask_security import utils, auth_token_required, roles_required
 from model import Subjects, db
 
 
-class AddSub(Resource):
+class Subs(Resource):
     # /subjects
     def get(self):
 
@@ -101,6 +101,7 @@ class AddSub(Resource):
 class Addinstructor(Resource):
     @auth_token_required
     @roles_required(["admin", "manager"])
+
     def patch(self, user_id):
 
         input = request.get_json()
@@ -110,7 +111,8 @@ class Addinstructor(Resource):
         if not user:
             return make_response(jsonify({"message": "User not found"}), 404)
 
-        role = input["role"]
+        role = "instructor"
+
         if not datastore.find_role(role):
             return make_response(jsonify({"message": "Role not found"}), 404)
 
@@ -141,7 +143,8 @@ class Addstud(Resource):
         if not user:
             return make_response(jsonify({"message": "User not found"}), 404)
 
-        role = input["role"]
+        role = "student"
+        
         if not datastore.find_role(role):
             return make_response(jsonify({"message": "Role not found"}), 404)
 
@@ -158,5 +161,37 @@ class Addstud(Resource):
         }
 
         return make_response(jsonify(result), 200)
+    
+class Addmanager(Resource):
+    @auth_token_required
+    @roles_required(["admin"])
 
-    # ----------------------------------------------------------------------------------------
+    def patch(self, user_id):
+
+        input = request.get_json()
+
+        user = datastore.find_user(id=user_id)
+
+        if not user:
+            return make_response(jsonify({"message": "User not found"}), 404)
+
+        role = "manager"
+
+        if not datastore.find_role(role):
+            return make_response(jsonify({"message": "Role not found"}), 404)
+
+        user.roles.append(datastore.find_role(role))
+        db.session.commit()
+
+        result = {
+            "message": "User updated successfully",
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "roles": [role.name for role in user.roles],
+            },
+        }
+
+        return make_response(jsonify(result), 200)
+    
+# ----------------------------------------------------------------------------------------
