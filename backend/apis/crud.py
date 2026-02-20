@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import make_response, request, jsonify
 from user_datastore import datastore
-from flask_security import utils, auth_token_required
+from flask_security import utils, auth_token_required, roles_required
 from model import Subjects, db
 
 
@@ -79,7 +79,7 @@ class AddSub(Resource):
         }
 
         return make_response(jsonify(result), 201)
-    
+
     def delete(self, sub_id):
         subject = Subjects.query.get(sub_id)
         if not subject:
@@ -93,3 +93,70 @@ class AddSub(Resource):
         }
 
         return make_response(jsonify(result), 200)
+
+
+# ---------------------------------------------------------------------------------
+
+
+class Addinstructor(Resource):
+    @auth_token_required
+    @roles_required(["admin", "manager"])
+    def patch(self, user_id):
+
+        input = request.get_json()
+
+        user = datastore.find_user(id=user_id)
+
+        if not user:
+            return make_response(jsonify({"message": "User not found"}), 404)
+
+        role = input["role"]
+        if not datastore.find_role(role):
+            return make_response(jsonify({"message": "Role not found"}), 404)
+
+        user.roles.append(datastore.find_role(role))
+        db.session.commit()
+
+        result = {
+            "message": "User updated successfully",
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "roles": [role.name for role in user.roles],
+            },
+        }
+
+        return make_response(jsonify(result), 200)
+
+
+class Addstud(Resource):
+    @auth_token_required
+    @roles_required(["admin", "manager"])
+    def patch(self, user_id):
+
+        input = request.get_json()
+
+        user = datastore.find_user(id=user_id)
+
+        if not user:
+            return make_response(jsonify({"message": "User not found"}), 404)
+
+        role = input["role"]
+        if not datastore.find_role(role):
+            return make_response(jsonify({"message": "Role not found"}), 404)
+
+        user.roles.append(datastore.find_role(role))
+        db.session.commit()
+
+        result = {
+            "message": "User updated successfully",
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "roles": [role.name for role in user.roles],
+            },
+        }
+
+        return make_response(jsonify(result), 200)
+
+    # ----------------------------------------------------------------------------------------
