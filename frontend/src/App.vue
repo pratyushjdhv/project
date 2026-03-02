@@ -13,14 +13,21 @@ async function logout() {
     }
   });
   if (response.ok) {
+
     const result = await response.json();
     console.log(result);
+
     localStorage.removeItem("auth_token");
     router.push('/login');
+
     alert(result.message);
+
   } else {
     alert("Logout failed!");
   }
+}
+function is_loggedin(){
+  return localStorage.getItem("auth_token") !== null;
 }
 
 </script>
@@ -49,7 +56,7 @@ async function logout() {
               <RouterLink class="nav-link" to="/studentdashboard">Student Dashboard</RouterLink>
             </li>
             <li class="nav-item">
-              <button class="btn btn-outline-danger" @click="logout">Logout</button>
+              <button class="btn btn-outline-danger" @click="logout" v-show="is_loggedin()">Logout</button>
             </li>
           </ul>
           <form class="d-flex" role="search">
