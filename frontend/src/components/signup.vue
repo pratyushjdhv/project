@@ -32,9 +32,10 @@ const email = ref('');
 const password = ref('');
 const passwordHelp = ref('');
 const emailHelp = ref('');
+const usernameHelp = ref('');
 
 function checkusername(){
-    if (username.value.length !== 0) {
+    if (username.value.length === 0) {
         usernameHelp.value = "username should be a valid name!!!";
         return false;
     } else {
@@ -85,12 +86,14 @@ async function submitForm() {
     if (response.ok) {
         const result = await response.json();
         alert(result.message);
+        // console.log(result);
     } else {
         const result = await response.json();
         alert("Registration failed!: " + result.message);
+        // console.log(result);
     }
 
-    console.log(result);
+    
 }
 
 
